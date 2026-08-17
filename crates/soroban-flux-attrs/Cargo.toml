@@ -1,0 +1,22 @@
+[package]
+name = "soroban-flux-attrs"
+description = "Vendored flux-attrs (github.com/flux-rs/flux, MIT) — the Flux attribute proc-macros; erase to no-ops unless built under the flux driver"
+version.workspace = true
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+# Dependency-renamed so the vendored source stays byte-identical to upstream.
+flux-attrs-impl = { package = "soroban-flux-attrs-impl", path = "../soroban-flux-attrs-impl", version = "0.1.0" }
+
+# Vendored byte-identical upstream source (see VENDORED.md): keep upstream's
+# lint posture, never this workspace's.
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"

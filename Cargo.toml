@@ -1,6 +1,12 @@
 [workspace]
 resolver = "2"
-members = ["crates/soroban-flux", "crates/probe-sdk26"]
+members = [
+    "crates/soroban-flux",
+    "crates/soroban-flux-attrs-impl",
+    "crates/soroban-flux-attrs",
+    "crates/soroban-flux-rs",
+    "crates/probe-sdk26",
+]
 
 [workspace.package]
 version = "0.1.0"
@@ -9,14 +15,29 @@ license = "Apache-2.0"
 repository = "https://github.com/nidohq/soroban-flux"
 
 [workspace.dependencies]
-soroban-sdk = "=26.0.1"
+# Wide range: consumers span sdk 26 (perch) and 27 (nido, admin-sep). The
+# API surface this crate touches (BytesN/Bytes/U256/Env) is stable across
+# both; each consumer's lockfile picks its own single version.
+soroban-sdk = ">=26.0.1, <28"
 soroban-flux = { path = "crates/soroban-flux" }
-# Flux attribute macros. Git-only (no crates.io release); the rev must match
-# the installed flux toolchain — see COMPATIBILITY.md and the justfile's
-# FLUX_REV. Attributes erase to no-ops unless built under the flux driver
-# (cfg(flux_sysroot)), so this dep adds zero runtime cost and compiles on
-# stable.
-flux-rs = { git = "https://github.com/flux-rs/flux.git", rev = "283ad737569f80951973747ef16f1a89d64d9728" }
+# Flux attribute macros — VENDORED from github.com/flux-rs/flux (MIT) at the
+# FLUX_REV in the justfile/COMPATIBILITY.md, dependency-renamed so both the
+# vendored sources and this workspace's `flux_rs::` paths stay byte-identical
+# to upstream. Vendoring (rather than the upstream git dep) is what makes
+# every crate here publishable to crates.io, which forbids git dependencies.
+# Attributes erase to no-ops unless built under the flux driver
+# (cfg(flux_sysroot)): zero runtime cost, compiles on stable.
+flux-rs = { package = "soroban-flux-rs", path = "crates/soroban-flux-rs", version = "0.1.0" }
+
+# First-party crates opt in via `[lints] workspace = true`; the vendored
+# flux crates instead cap everything to allow in their own manifests so the
+# byte-identical upstream source never has to satisfy this repo's lint bar.
+[workspace.lints.rust]
+warnings = "deny"
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(flux_sysroot)"] }
+
+[workspace.lints.clippy]
+all = "deny"
 
 # Match consumer contract profiles (perch/nido): refinement proofs assume
 # overflow panics, so keep overflow-checks on in release just like the
