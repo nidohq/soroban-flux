@@ -1,0 +1,22 @@
+[package]
+name = "soroban-flux-rs"
+description = "Vendored flux-rs (github.com/flux-rs/flux, MIT) — attrs re-export, assert/unreachable intrinsics, bitvec/defs macros"
+version.workspace = true
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+
+[dependencies]
+# Dependency-renamed so the vendored source stays byte-identical to upstream.
+flux-attrs = { package = "soroban-flux-attrs", path = "../soroban-flux-attrs", version = "0.1.0" }
+
+[package.metadata.flux]
+enabled = true
+
+# Vendored byte-identical upstream source (see VENDORED.md): keep upstream's
+# lint posture, never this workspace's.
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"

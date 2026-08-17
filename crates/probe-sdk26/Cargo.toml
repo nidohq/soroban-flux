@@ -16,5 +16,5 @@ soroban-sdk = "26.1"
 [package.metadata.flux]
 enabled = true
 
-[lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ["cfg(flux_sysroot)"] }
+[lints]
+workspace = true

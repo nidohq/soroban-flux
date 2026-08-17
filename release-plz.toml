@@ -1,0 +1,32 @@
+# admin-sep's publish pattern: nothing releases unless opted in per package,
+# so the probe crate can never be published by accident.
+[workspace]
+release = false
+
+[[package]]
+name = "soroban-flux-attrs-impl"
+release = true
+changelog_update = true
+git_tag_enable = true
+git_release_enable = true
+
+[[package]]
+name = "soroban-flux-attrs"
+release = true
+changelog_update = true
+git_tag_enable = true
+git_release_enable = true
+
+[[package]]
+name = "soroban-flux-rs"
+release = true
+changelog_update = true
+git_tag_enable = true
+git_release_enable = true
+
+[[package]]
+name = "soroban-flux"
+release = true
+changelog_update = true
+git_tag_enable = true
+git_release_enable = true

@@ -1,0 +1,20 @@
+[package]
+name = "soroban-flux-attrs-impl"
+description = "Vendored flux-attrs-impl (github.com/flux-rs/flux, MIT) — implementation of the Flux attribute macros; source byte-identical to the upstream rev in COMPATIBILITY.md"
+version.workspace = true
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2.0.110", features = ["full", "extra-traits", "visit-mut"] }
+
+# Vendored byte-identical upstream source (see VENDORED.md): keep upstream's
+# lint posture, never this workspace's.
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"

@@ -6,7 +6,7 @@ bump here first, burn in, then roll out.
 
 | soroban-flux | flux rev | nightly | soroban-sdk | z3 | fixpoint | status |
 |---|---|---|---|---|---|---|
-| 0.1.0-dev | `283ad73` (2026-08-17) | nightly-2026-02-05 | =26.0.1 | 5.0.0 | nightly (2026-08) | **M0 GO** (2026-08-17) |
+| 0.1.0-dev | `283ad73` (2026-08-17) | nightly-2026-02-05 | =26.0.1 | 5.0.0 | nightly (2026-08) | **M0 GO**; attrs vendored (publishable) 2026-08-17 |
 
 ## M0 probe log (2026-08-17) — GO
 
