@@ -1,0 +1,17 @@
+[package]
+name = "probe-sdk26"
+description = "M0 feasibility probe: exercises flux verification alongside soroban-sdk 26. Kept green in CI as a regression sentinel; never published."
+publish = false
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+soroban-flux = { workspace = true }
+soroban-sdk = { workspace = true }
+
+[package.metadata.flux]
+enabled = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(flux_sysroot)"] }

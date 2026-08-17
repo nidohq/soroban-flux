@@ -1,0 +1,19 @@
+[package]
+name = "soroban-flux"
+description = "Flux refinement-type bridge for Soroban smart contracts: attribute prelude, refined newtypes, and extern specs for soroban-sdk"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+flux-rs = { workspace = true }
+soroban-sdk = { workspace = true }
+
+[package.metadata.flux]
+enabled = true
+
+[lints.rust]
+# flux sets --cfg flux_sysroot when compiling under the driver; normal builds
+# should not warn about it.
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(flux_sysroot)"] }

@@ -1,0 +1,71 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  # Keep in sync with the justfile — the justfile is the source of truth.
+  FLUX_REV: 283ad737569f80951973747ef16f1a89d64d9728
+  FLUX_NIGHTLY: nightly-2026-02-05
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # The erasure gate: everything must build, lint, and test on plain stable
+  # with flux attributes stripped to no-ops.
+  stable:
+    runs-on: ubuntu-latest
+    env:
+      RUSTUP_TOOLCHAIN: stable # outranks rust-toolchain.toml's flux nightly
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+
+  # The verification gate: cargo flux over every flux-enabled crate.
+  flux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install flux nightly
+        run: |
+          rustup toolchain install "$FLUX_NIGHTLY" \
+            --component rust-src --component rustc-dev --component llvm-tools \
+            --profile minimal
+      - name: Cache flux toolchain
+        id: flux-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.flux
+            ~/.cargo/bin/flux
+            ~/.cargo/bin/cargo-flux
+            ~/.cargo/bin/fixpoint
+            ~/.cargo/bin/z3
+          key: flux-${{ runner.os }}-${{ env.FLUX_REV }}
+      - name: Install z3 + liquid-fixpoint + flux
+        if: steps.flux-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          BIN="$HOME/.cargo/bin"; mkdir -p "$BIN"
+          url=$(curl -fsSL https://api.github.com/repos/Z3Prover/z3/releases/latest \
+                | grep -o 'https://[^"]*-x64-glibc[^"]*\.zip' | head -1)
+          tmp=$(mktemp -d)
+          curl -fsSL "$url" -o "$tmp/z3.zip"
+          unzip -qo "$tmp/z3.zip" -d "$tmp"
+          install -m755 "$tmp"/z3-*/bin/z3 "$BIN/z3"
+          curl -fsSL "https://github.com/ucsd-progsys/liquid-fixpoint/releases/download/nightly/fixpoint-x86_64-linux-gnu.tar.gz" | tar xz -C "$BIN"
+          chmod +x "$BIN/fixpoint"
+          git clone https://github.com/flux-rs/flux "$tmp/flux"
+          git -C "$tmp/flux" checkout "$FLUX_REV"
+          (cd "$tmp/flux" && cargo xtask install)
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-directories: target/flux-cache
+      - name: cargo flux
+        run: |
+          FLUXFLAGS="-Fpointer-width=32 -Fcheck-overflow=strict -Fcache=target/flux-cache" cargo flux

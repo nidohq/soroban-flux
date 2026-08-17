@@ -1,0 +1,1 @@
+{"total":45,"functions":[{"def_path":"pure::accept_nonce","time_ms":21},{"def_path":"pure::spend","time_ms":18},{"def_path":"sdk_types::hash_prefix","time_ms":2},{"def_path":"pure::settle","time_ms":0},{"def_path":"pure::stack_write","time_ms":0}],"queries":[{"task_key":"pure::accept_nonce###Body","time_ms":21},{"task_key":"pure::spend###Body","time_ms":18}]}

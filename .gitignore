@@ -1,0 +1,5 @@
+target/
+.flux/
+*.log
+.DS_Store
+docs/research/

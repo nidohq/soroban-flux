@@ -1,0 +1,7 @@
+# Flux's own pinned toolchain (flux-rs/flux rust-toolchain.toml at FLUX_REV).
+# This repo is the ONLY place that pins the flux nightly — consumer repos
+# (nido, perch, stellar-registry, admin-sep) keep their stable pins and run
+# flux via `RUSTUP_TOOLCHAIN={{FLUX_NIGHTLY}} cargo flux` (see justfile).
+[toolchain]
+channel = "nightly-2026-02-05"
+components = ["rust-src", "rustc-dev", "llvm-tools", "rustfmt", "clippy"]

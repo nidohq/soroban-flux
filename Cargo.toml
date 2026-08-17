@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = ["crates/soroban-flux", "crates/probe-sdk26"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/nidohq/soroban-flux"
+
+[workspace.dependencies]
+soroban-sdk = "=26.0.1"
+soroban-flux = { path = "crates/soroban-flux" }
+# Flux attribute macros. Git-only (no crates.io release); the rev must match
+# the installed flux toolchain — see COMPATIBILITY.md and the justfile's
+# FLUX_REV. Attributes erase to no-ops unless built under the flux driver
+# (cfg(flux_sysroot)), so this dep adds zero runtime cost and compiles on
+# stable.
+flux-rs = { git = "https://github.com/flux-rs/flux.git", rev = "283ad737569f80951973747ef16f1a89d64d9728" }
+
+# Match consumer contract profiles (perch/nido): refinement proofs assume
+# overflow panics, so keep overflow-checks on in release just like the
+# repos this crate serves.
+[profile.release]
+overflow-checks = true
