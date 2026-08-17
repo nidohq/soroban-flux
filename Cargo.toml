@@ -9,7 +9,10 @@ license = "Apache-2.0"
 repository = "https://github.com/nidohq/soroban-flux"
 
 [workspace.dependencies]
-soroban-sdk = "26"
+# Wide range: consumers span sdk 26 (perch) and 27 (nido, admin-sep). The
+# API surface this crate touches (BytesN/Bytes/U256/Env) is stable across
+# both; each consumer's lockfile picks its own single version.
+soroban-sdk = ">=26.0.1, <28"
 soroban-flux = { path = "crates/soroban-flux" }
 # Flux attribute macros. Git-only (no crates.io release); the rev must match
 # the installed flux toolchain — see COMPATIBILITY.md and the justfile's

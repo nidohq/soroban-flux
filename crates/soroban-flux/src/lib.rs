@@ -19,6 +19,7 @@
 
 #![no_std]
 
+pub mod bn254;
 pub mod defs;
 pub mod prelude;
 pub mod specs;

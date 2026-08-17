@@ -8,7 +8,10 @@ license.workspace = true
 
 [dependencies]
 soroban-flux = { workspace = true }
-soroban-sdk = { workspace = true }
+# The probe holds this workspace to the sdk-26 line (the lib crate itself
+# accepts 26–27 for consumers); 26.0.x's testutils chain no longer builds
+# (ed25519-dalek CryptoRng drift), so track the 26.1 patch line.
+soroban-sdk = "26.1"
 
 [package.metadata.flux]
 enabled = true
