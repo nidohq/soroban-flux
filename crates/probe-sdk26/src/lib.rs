@@ -10,6 +10,7 @@
 
 #![no_std]
 
+pub mod contract_probe;
 pub mod extern_specs;
 pub mod neg;
 pub mod pure;

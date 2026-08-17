@@ -41,3 +41,16 @@ All three probes green; whole run sub-second warm, ~25 s cold (dep compile).
 5. `extern_spec` impl blocks must mirror the SDK's *block structure*, not just
    signatures: `Vec::new`/`push_back` live in the `T: IntoVal + TryFromVal`
    block, `len` in a separate unbounded `impl<T> Vec<T>`.
+
+## contractimpl inline-annotation findings (2026-08-17, probe 4)
+
+- The 2024 flux-rs sdk-fork patch (`filter_out_flux_attrs`) is **obsolete**:
+  soroban-sdk 25+ strips all non-doc/cfg/allow/deny attributes from
+  macro-generated code via `pass_through_attr_to_gen_code`, so `flux_tool::*`
+  attrs never reach generated copies. Inline `#[sig]` on `#[contractimpl]`
+  methods works without any sdk patch.
+- The generated dispatcher (`__Ty__fn__invoke_raw`) is flux-checked **as a
+  caller** of the annotated method: input refinements on public entry points
+  are rejected as unprovable preconditions (the host can pass anything).
+  Correct pattern: entry points validate at the boundary and carry
+  postconditions; rich preconditions live on the internal macro-free layer.
