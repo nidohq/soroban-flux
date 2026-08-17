@@ -9,7 +9,7 @@ license = "Apache-2.0"
 repository = "https://github.com/nidohq/soroban-flux"
 
 [workspace.dependencies]
-soroban-sdk = "=26.0.1"
+soroban-sdk = "26"
 soroban-flux = { path = "crates/soroban-flux" }
 # Flux attribute macros. Git-only (no crates.io release); the rev must match
 # the installed flux toolchain — see COMPATIBILITY.md and the justfile's
